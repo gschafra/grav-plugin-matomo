@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit8167c6e5d1ccdcaa6e62f9bbd72fab40
 {
     public static $prefixLengthsPsr4 = array (
-        'G' => 
+        'G' =>
         array (
             'Grav\\Plugin\\Matomo\\' => 19,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Grav\\Plugin\\Matomo\\' => 
+        'Grav\\Plugin\\Matomo\\' =>
         array (
             0 => __DIR__ . '/../..' . '/classes',
         ),
@@ -25,7 +25,6 @@ class ComposerStaticInit8167c6e5d1ccdcaa6e62f9bbd72fab40
         'Grav\\Plugin\\MatomoPlugin' => __DIR__ . '/../..' . '/matomo.php',
         'MatomoTracker' => __DIR__ . '/..' . '/matomo/matomo-php-tracker/MatomoTracker.php',
         'PiwikTracker' => __DIR__ . '/..' . '/matomo/matomo-php-tracker/PiwikTracker.php',
-        'Unit\\MatomoTrackerTest' => __DIR__ . '/..' . '/matomo/matomo-php-tracker/tests/Unit/MatomoTrackerTest.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

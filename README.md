@@ -10,7 +10,7 @@ The **Matomo** Plugin is an extension for [Grav CMS](http://github.com/getgrav/g
 * Matomo Dashboard integrated in Grav Admin Plugin
 * Optional Cookie tracking
 * Optional Javascript tracking
-* Grav 1.6 and 1.7 supported
+* Grav 1.6+ and PHP 7.2+ supported
 
 ## Installation
 
@@ -110,4 +110,3 @@ If you have any improvement, please do not hesitate to file an issue.
 
 - [ ] Track events like form submissions with an additional form action
 - [ ] Add twig templates/css to also track impressions of objects via tracking pixel and mouseover
-
