@@ -85,6 +85,17 @@ class MatomoPlugin extends Plugin
     {
         $page = $event['page'];
 
+        if (!$page->routable()) {
+            $this->documentBlockingReason('Page is not routable.');
+            return;
+        }
+
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        if (preg_match('/bot|crawl|spider|scanner|curl|wget|go-http-client/i', $userAgent)) {
+            $this->documentBlockingReason('Client user agent is not tracked.');
+            return;
+        }
+
         // Merge configs and then check for the active flag per page
         $config = $this->mergeConfig($page);
         if (!$config->get('active', true)) {
