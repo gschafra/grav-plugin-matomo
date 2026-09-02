@@ -12,6 +12,16 @@ use MatomoTracker;
  */
 class MatomoPlugin extends Plugin
 {
+    private const AI_CHATBOT_USER_AGENT_SUBSTRINGS = [
+        'ChatGPT-User',
+        'MistralAI-User',
+        'Gemini-Deep-Research',
+        'Claude-User',
+        'Perplexity-User',
+        'Google-GeminiNotebook',
+        'Google-NotebookLM'
+    ];
+
     /**
      * @return array
      *
@@ -91,7 +101,8 @@ class MatomoPlugin extends Plugin
         }
 
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        if (preg_match('/bot|crawl|spider|scanner|curl|wget|go-http-client/i', $userAgent)) {
+        $isAiChatbot = $this->isAiChatbot($userAgent);
+        if (!$isAiChatbot && $this->isBlockedUserAgent($userAgent)) {
             $this->documentBlockingReason('Client user agent is not tracked.');
             return;
         }
@@ -143,6 +154,16 @@ class MatomoPlugin extends Plugin
             return;
         }
 
+        if ($isAiChatbot) {
+            if (!$config->get('track_ai_chatbots', false)) {
+                $this->documentBlockingReason('AI chatbot tracking is disabled.');
+                return;
+            }
+
+            $this->trackAiChatbot((int)$site_id, $matomo_url, $token, $userAgent, $page->title());
+            return;
+        }
+
         // Add javascript tracking code (and disable php tracker to avoid duplicate entries)
         if ($config->get('enable_javascript', false)) {
             $matomo_js = $this->grav['twig']->processTemplate('js/matomo.js.twig');
@@ -174,6 +195,41 @@ class MatomoPlugin extends Plugin
         }
         catch (\RuntimeException $e) {
             $this->grav['log']->error('Error tracking page view via Matomo: ' . $e->getMessage());
+        }
+    }
+
+    private function isAiChatbot(string $userAgent): bool
+    {
+        foreach (self::AI_CHATBOT_USER_AGENT_SUBSTRINGS as $substring) {
+            if (stripos($userAgent, $substring) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isBlockedUserAgent(string $userAgent): bool
+    {
+        return preg_match('/bot|crawl|spider|scanner|curl|wget|go-http-client/i', $userAgent) === 1;
+    }
+
+    private function trackAiChatbot(int $siteId, string $matomoUrl, string $token, string $userAgent, string $pageTitle): void
+    {
+        $matomoTracker = new MatomoTracker($siteId, $matomoUrl);
+        $matomoTracker->disableCookieSupport();
+        $matomoTracker->disableSendImageResponse();
+        $matomoTracker->setTokenAuth($token);
+        $matomoTracker->setUserAgent($userAgent);
+        $matomoTracker->setCustomTrackingParameter('recMode', '1');
+        $matomoTracker->setCustomTrackingParameter('ua', $userAgent);
+        $matomoTracker->setCustomTrackingParameter('source', 'Grav');
+
+        try {
+            $matomoTracker->doTrackPageView($pageTitle);
+        }
+        catch (\RuntimeException $e) {
+            $this->grav['log']->error('Error tracking AI chatbot via Matomo: ' . $e->getMessage());
         }
     }
 

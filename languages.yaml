@@ -14,6 +14,8 @@ en:
     ENABLE_COOKIES_HELP: 'Can be used to set cookies for better user tracking. Note that this may require an additional cookie banner to be GDPR/DSGVO compliant.'
     ENABLE_JAVASCRIPT: 'Enable Javascript'
     ENABLE_JAVASCRIPT_HELP: 'Enable client side tracking via javascript rather than the server side php tracker.'
+    TRACK_AI_CHATBOTS: 'Track AI Chatbots'
+    TRACK_AI_CHATBOTS_HELP: 'Track supported user-initiated AI chatbots separately. Requires Matomo 5.7+ and does not create visits or page views.'
     BLOCKED_IP_ADDRESSES: "Blocked Client IP Addresses"
     BLOCKED_IP_ADDRESSES_HELP: "Disables Matomo tracking for clients on the given IP addresses."
     BLOCKED_IP_ADDRESSES_VALUE: "IP address"

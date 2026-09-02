@@ -10,6 +10,7 @@ The **Matomo** Plugin is an extension for [Grav CMS](http://github.com/getgrav/g
 * Matomo Dashboard integrated in Grav Admin Plugin
 * Optional Cookie tracking
 * Optional Javascript tracking
+* Optional AI chatbot telemetry for Matomo 5.7+
 * Grav 1.6+ and PHP 7.2+ supported
 
 ## Installation
@@ -66,6 +67,8 @@ token: ''
 respect_do_not_track: true
 enable_cookies: false
 enable_javascript: false
+# Track supported AI chatbots separately in Matomo 5.7+ without creating visits or page views.
+track_ai_chatbots: false
 # Array of blocked client IP addresses for which tracking will be disabled.
 blockedIpAddresses: []
 # Array of blocked client IPv4 and/or IPv6 address ranges in the form
@@ -93,6 +96,12 @@ debug: false
 Note that if you use the Admin Plugin, a file with your configuration named matomo.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
 
 It is **recommended to set the token via environment variables** and the [grav dotenv plugin](https://github.com/Ralla/grav-plugin-dotenv). Please **be aware** that the token will be currently [added to the config file](https://github.com/Ralla/grav-plugin-dotenv/issues/11) when editing the settings via the admin plugin.
+
+### AI Chatbot Tracking
+
+Set `track_ai_chatbots: true` to track supported user-initiated AI chatbots separately in Matomo 5.7+. The plugin sends bot-only telemetry using `recMode=1`, so these requests do not create normal visits or page views.
+
+The integration only forwards the AI chatbot identifiers supported by the Matomo PHP tracker: ChatGPT-User, MistralAI-User, Gemini Deep Research, Claude-User, Perplexity-User, Google Gemini Notebook, and Google NotebookLM. Other bots and crawlers remain blocked.
 
 ## Usage
 
