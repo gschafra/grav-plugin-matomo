@@ -13,8 +13,8 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
-    "matomo/matomo-php-tracker": "^3.4"
+    "php": ">=8.3.0",
+    "matomo/matomo-php-tracker": "^4.0.1"
   },
   "autoload": {
     "psr-4": {
@@ -24,7 +24,7 @@
   },
   "config": {
     "platform": {
-      "php": "7.2"
+      "php": "8.4"
     }
   }
 }

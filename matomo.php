@@ -97,13 +97,13 @@ class MatomoPlugin extends Plugin
     public function onPageInitialized(Event $event)
     {
         // Sets a cookie for users who log in to the admin panel to exclude them from web analytics.
-        if ($this->isAdmin() && $this->grav['user']->authenticated) { 
+        if ($this->isAdmin() && $this->grav['user']->authenticated) {
             $cookieName = $this->config->get('plugins.matomo.blocking_cookie', 'blockMatomo');
             if (!isset($_COOKIE[$cookieName])) {
                 setcookie($cookieName, 'true', time() + (86400 * 365), '/', '', true, false);
             }
         }
-        
+
         $page = $event['page'];
 
         if (!$page->routable()) {
