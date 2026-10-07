@@ -104,6 +104,22 @@ Anchor navigation and form submissions happen in the browser, so they are tracke
 `event_rules` (`type`: click|submit|visible, CSS `selector`, `category`, `action`, `name` with placeholders
 `{id} {text} {href} {hash} {name} {path}`).
 
+### Opt-out and consent
+
+Visitors who opted out with [Matomo's native opt-out form](https://developer.matomo.org/guides/tracking-optout)
+(cookie `mtm_consent_removed`) are never tracked, for page views and events. Embed the form on your privacy page
+with the snippet from Matomo (Administration → Privacy → Users opt-out), e.g.
+
+```html
+<div id="matomo-opt-out"></div>
+<script src="https://matomo.example.tld/index.php?module=CoreAdminHome&action=optOutJS&divId=matomo-opt-out&language=auto"></script>
+```
+
+Set `require_consent: true` to track only visitors with the cookie `mtm_consent`. Your consent banner sets it
+with `_paq.push(['rememberConsentGiven'])` (JavaScript tracking) or by writing the cookie
+`mtm_consent=<timestamp>` itself. With JavaScript tracking the plugin also calls `requireConsent` for Matomo's JS tracker.
+Note that Matomo's opt-out form writes `mtm_consent` when a visitor opts in, so it can act as a minimal consent switch.
+
 ### AI Chatbot Tracking
 
 Set `track_ai_chatbots: true` to track supported user-initiated AI chatbots separately in Matomo 5.7+. The plugin sends bot-only telemetry using `recMode=1`, so these requests do not create normal visits or page views.

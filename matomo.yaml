@@ -12,6 +12,9 @@ token: ''
 respect_do_not_track: true
 enable_cookies: false
 enable_javascript: false
+# Only track visitors who gave consent (cookie "mtm_consent", e.g. set by _paq.push(['rememberConsentGiven'])).
+# Visitors who opted out (cookie "mtm_consent_removed", set by Matomo's opt-out form) are never tracked.
+require_consent: false
 # Track supported AI chatbots separately in Matomo 5.7+ without creating visits or page views.
 track_ai_chatbots: false
 # Array of blocked client IP addresses for which tracking will be disabled.

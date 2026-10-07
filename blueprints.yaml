@@ -117,6 +117,18 @@ form:
           validate:
             type: bool
 
+        require_consent:
+          type: toggle
+          label: PLUGIN_MATOMO.REQUIRE_CONSENT
+          help: PLUGIN_MATOMO.REQUIRE_CONSENT_HELP
+          highlight: 1
+          default: 0
+          options:
+            1: PLUGIN_ADMIN.ENABLED
+            0: PLUGIN_ADMIN.DISABLED
+          validate:
+            type: bool
+
         track_ai_chatbots:
           type: toggle
           label: PLUGIN_MATOMO.TRACK_AI_CHATBOTS

@@ -188,6 +188,16 @@ class MatomoPlugin extends Plugin
             return;
         }
 
+        // Matomo's consent cookies (set by its opt-out form or rememberConsentGiven). The opt-out is always
+        // honored, consent is only needed if required. The event script checks the same cookies client side
+        // because the rendered page may be cached.
+        $consentMissing = $config->get('require_consent', false) && empty($_COOKIE['mtm_consent']);
+        if (!empty($_COOKIE['mtm_consent_removed']) || $consentMissing) {
+            $this->documentBlockingReason('Visitor opted out or has not given consent.');
+            $this->addEventTracking($config, false);
+            return;
+        }
+
         // Matomo object
         $matomoTracker = new MatomoTracker((int)$site_id, $matomo_url);
 
@@ -236,7 +246,11 @@ class MatomoPlugin extends Plugin
             return;
         }
 
-        $js = $this->grav['twig']->processTemplate('js/events.js.twig', ['rules' => $rules, 'use_js' => $useJs]);
+        $js = $this->grav['twig']->processTemplate('js/events.js.twig', [
+            'rules' => $rules,
+            'use_js' => $useJs,
+            'require_consent' => (bool)$config->get('require_consent', false)
+        ]);
         $this->grav['assets']->addInlineJs($js, ['type' => 'text/javascript', 'priority' => 0, 'position' => 'after']);
     }
 

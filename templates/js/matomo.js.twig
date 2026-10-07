@@ -6,6 +6,9 @@ var _paq = window._paq = window._paq || [];
 {% if not config.plugins.matomo.enable_cookies %}
 _paq.push(['disableCookies']);
 {% endif %}
+{% if config.plugins.matomo.require_consent %}
+_paq.push(['requireConsent']);
+{% endif %}
 _paq.push(['trackPageView']);
 _paq.push(['enableLinkTracking']);
 (function() {

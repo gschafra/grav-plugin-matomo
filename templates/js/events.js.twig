@@ -6,6 +6,17 @@
   var endpoint = "//{{ config.plugins.matomo.matomo_url|replace({'https://': '', 'http://': ''})|trim|rtrim('/') }}/matomo.php";
   var siteId = {{ config.plugins.matomo.site_id|default(1)|json_encode|raw }};
 
+  var requireConsent = {{ require_consent ? 'true' : 'false' }};
+
+  function hasCookie(name) {
+    return document.cookie.split('; ').some(function(c) { return c.indexOf(name + '=') === 0; });
+  }
+
+  // Matomo's own cookies, set by its opt-out form or rememberConsentGiven.
+  function allowed() {
+    return !hasCookie('mtm_consent_removed') && (!requireConsent || hasCookie('mtm_consent'));
+  }
+
   function expand(tpl, el) {
     var a = el.closest ? el.closest('a') : null;
     var vars = {
@@ -20,6 +31,7 @@
   }
 
   function send(rule, el) {
+    if (!allowed()) { return; }
     var c = expand(rule.category || 'Interaction', el), a = expand(rule.action || rule.type, el),
         n = expand(rule.name, el);
     if (useJs && window._paq) {
