@@ -184,6 +184,7 @@ class MatomoPlugin extends Plugin
               'priority' => 0,
               'position' => 'after'
             ]);
+            $this->addEventTracking($config, true);
             return;
         }
 
@@ -207,6 +208,36 @@ class MatomoPlugin extends Plugin
         catch (\RuntimeException $e) {
             $this->grav['log']->error('Error tracking page view via Matomo: ' . $e->getMessage());
         }
+
+        $this->addEventTracking($config, false);
+    }
+
+    /**
+     * Adds the client side event tracking script (anchor navigation, forms, custom rules).
+     * Uses the Matomo JS tracker if active, otherwise sends events directly to the Matomo HTTP tracking API.
+     */
+    private function addEventTracking($config, bool $useJs): void
+    {
+        $rules = [];
+        if ($config->get('track_anchor_navigation', false)) {
+            $rules[] = ['type' => 'click', 'selector' => 'a[href*="#"]', 'category' => 'Navigation',
+                'action' => 'Anchor', 'name' => '{hash}'];
+        }
+        if ($config->get('track_forms', false)) {
+            $rules[] = ['type' => 'submit', 'selector' => 'form', 'category' => 'Form',
+                'action' => 'Submit', 'name' => '{id}'];
+        }
+        foreach ($config->get('event_rules', []) as $rule) {
+            if (!empty($rule['selector'])) {
+                $rules[] = $rule;
+            }
+        }
+        if (!$rules) {
+            return;
+        }
+
+        $js = $this->grav['twig']->processTemplate('js/events.js.twig', ['rules' => $rules, 'use_js' => $useJs]);
+        $this->grav['assets']->addInlineJs($js, ['type' => 'text/javascript', 'priority' => 0, 'position' => 'after']);
     }
 
     private function isAiChatbot(string $userAgent): bool

@@ -1,0 +1,60 @@
+{# Generic front end event tracking driven by the plugin's event rules. #}
+{% autoescape 'js' %}
+(function() {
+  var rules = {{ rules|json_encode|raw }};
+  var useJs = {{ use_js ? 'true' : 'false' }};
+  var endpoint = "//{{ config.plugins.matomo.matomo_url|replace({'https://': '', 'http://': ''})|trim|rtrim('/') }}/matomo.php";
+  var siteId = {{ config.plugins.matomo.site_id|default(1)|json_encode|raw }};
+
+  function expand(tpl, el) {
+    var a = el.closest ? el.closest('a') : null;
+    var vars = {
+      id: el.id || el.getAttribute('name') || '',
+      text: (el.innerText || el.value || '').trim().slice(0, 100),
+      href: a ? a.getAttribute('href') || '' : '',
+      hash: a && a.hash ? a.hash : location.hash,
+      name: el.getAttribute('name') || '',
+      path: location.pathname
+    };
+    return String(tpl || '').replace(/\{(\w+)\}/g, function(_, k) { return vars[k] || ''; });
+  }
+
+  function send(rule, el) {
+    var c = expand(rule.category || 'Interaction', el), a = expand(rule.action || rule.type, el),
+        n = expand(rule.name, el);
+    if (useJs && window._paq) {
+      _paq.push(n ? ['trackEvent', c, a, n] : ['trackEvent', c, a]);
+      return;
+    }
+    var q = new URLSearchParams({
+      idsite: siteId, rec: 1, apiv: 1, send_image: 0, rand: Math.random(),
+      url: location.href, urlref: document.referrer, action_name: document.title,
+      e_c: c, e_a: a
+    });
+    if (n) q.set('e_n', n);
+    var url = endpoint + '?' + q;
+    if (!(navigator.sendBeacon && navigator.sendBeacon(url))) {
+      fetch(url, {mode: 'no-cors', keepalive: true});
+    }
+  }
+
+  rules.forEach(function(rule) {
+    if (!rule.selector) { return; }
+    if (rule.type === 'visible') {
+      if (!('IntersectionObserver' in window)) { return; }
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) { io.unobserve(e.target); send(rule, e.target); }
+        });
+      }, {threshold: 0.5});
+      document.querySelectorAll(rule.selector).forEach(function(el) { io.observe(el); });
+      return;
+    }
+    // Delegated, so it also works for dynamically inserted elements and AJAX forms.
+    document.addEventListener(rule.type === 'submit' ? 'submit' : 'click', function(ev) {
+      var el = ev.target.closest && ev.target.closest(rule.selector);
+      if (el) { send(rule, el); }
+    }, true);
+  });
+})();
+{% endautoescape %}

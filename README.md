@@ -97,6 +97,13 @@ Note that if you use the Admin Plugin, a file with your configuration named mato
 
 It is **recommended to set the token via environment variables** and the [grav dotenv plugin](https://github.com/Ralla/grav-plugin-dotenv). Please **be aware** that the token will be currently [added to the config file](https://github.com/Ralla/grav-plugin-dotenv/issues/11) when editing the settings via the admin plugin.
 
+### Front end event tracking
+
+Anchor navigation and form submissions happen in the browser, so they are tracked client side as Matomo events
+(works with PHP and JavaScript tracking). Enable `track_anchor_navigation` / `track_forms` or add custom
+`event_rules` (`type`: click|submit|visible, CSS `selector`, `category`, `action`, `name` with placeholders
+`{id} {text} {href} {hash} {name} {path}`).
+
 ### AI Chatbot Tracking
 
 Set `track_ai_chatbots: true` to track supported user-initiated AI chatbots separately in Matomo 5.7+. The plugin sends bot-only telemetry using `recMode=1`, so these requests do not create normal visits or page views.

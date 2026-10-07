@@ -152,6 +152,69 @@ form:
           size: small
           default: "blockMatomo"
 
+    events:
+      type: section
+      title: PLUGIN_MATOMO.EVENTS
+
+      fields:
+        track_anchor_navigation:
+          type: toggle
+          label: PLUGIN_MATOMO.TRACK_ANCHOR_NAVIGATION
+          help: PLUGIN_MATOMO.TRACK_ANCHOR_NAVIGATION_HELP
+          highlight: 1
+          default: 0
+          options:
+            1: PLUGIN_ADMIN.ENABLED
+            0: PLUGIN_ADMIN.DISABLED
+          validate:
+            type: bool
+
+        track_forms:
+          type: toggle
+          label: PLUGIN_MATOMO.TRACK_FORMS
+          help: PLUGIN_MATOMO.TRACK_FORMS_HELP
+          highlight: 1
+          default: 0
+          options:
+            1: PLUGIN_ADMIN.ENABLED
+            0: PLUGIN_ADMIN.DISABLED
+          validate:
+            type: bool
+
+        event_rules:
+          type: list
+          style: vertical
+          label: PLUGIN_MATOMO.EVENT_RULES
+          help: PLUGIN_MATOMO.EVENT_RULES_HELP
+          fields:
+            .type:
+              type: select
+              label: PLUGIN_MATOMO.EVENT_TYPE
+              default: click
+              options:
+                click: PLUGIN_MATOMO.EVENT_TYPE_CLICK
+                submit: PLUGIN_MATOMO.EVENT_TYPE_SUBMIT
+                visible: PLUGIN_MATOMO.EVENT_TYPE_VISIBLE
+            .selector:
+              type: text
+              label: PLUGIN_MATOMO.EVENT_SELECTOR
+              validate:
+                required: true
+            .category:
+              type: text
+              label: PLUGIN_MATOMO.EVENT_CATEGORY
+              validate:
+                required: true
+            .action:
+              type: text
+              label: PLUGIN_MATOMO.EVENT_ACTION
+              validate:
+                required: true
+            .name:
+              type: text
+              label: PLUGIN_MATOMO.EVENT_NAME
+              help: PLUGIN_MATOMO.EVENT_NAME_HELP
+
     dashboard:
       type: section
       title: PLUGIN_MATOMO.DASHBOARD

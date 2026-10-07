@@ -24,6 +24,16 @@ blockedIpRanges: ["private", "loopback", "link-local"]
 # Name of a blocking cookie, which disables Matomo JS and PHP tracking, when set.
 blockingCookie: "blockMatomo"
 
+# Front end event tracking (client side, works with PHP and JavaScript tracking).
+# Track clicks on in-page anchor links (#section) as event Navigation / Anchor / <hash>.
+track_anchor_navigation: false
+# Track form submissions as event Form / Submit / <form id or name>.
+track_forms: false
+# Custom rules. type: click|submit|visible, selector: CSS selector,
+# name placeholders: {id} {text} {href} {hash} {name} {path}
+event_rules: []
+#  - { type: click, selector: '.btn-donate', category: 'Donation', action: 'Click', name: '{text}' }
+
 # Grav admin plugin dashboard settings
 # The dashboard token must only have read access:
 # https://matomo.org/docs/embed-matomo-reports/#embed-piwik-widgets-on-a-password-protected-or-private-page
